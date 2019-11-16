@@ -28,6 +28,7 @@ namespace Tests
         [Test]
         public void TestBigNumbers()
         {
+            Assert.AreEqual(59884848483559, Kata.NextBiggerNumber(59884848459853));
             Assert.AreEqual(536479, Kata.NextBiggerNumber(534976));
             Assert.AreEqual(251678, Kata.NextBiggerNumber(218765));
         }

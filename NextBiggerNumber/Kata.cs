@@ -5,11 +5,11 @@ namespace NextBiggerNumber
 {
     public class Kata
     {
-        public static int NextBiggerNumber(int number)
+        public static long NextBiggerNumber(long number)
         {
-            int[] digits = GetAllDigits(number);
+            long[] digits = GetAllDigits(number);
 
-            int[] originalDigits = new int[digits.Length];
+            long[] originalDigits = new long[digits.Length];
 
             digits.CopyTo(originalDigits, 0);
 
@@ -17,41 +17,69 @@ namespace NextBiggerNumber
             {
                 for (int j = i -1; j >= 0; j--)
                 {
-                    int currentDigit = digits[i];
-                    int predecessorDigit = digits[j];
+                    long currentDigit = digits[i];
+                    long predecessorDigit = digits[j];
 
                     if (currentDigit > predecessorDigit)
                     {
                         digits[i] = predecessorDigit;
                         digits[j] = currentDigit;
-                    }
-                    else
-                    {
-                        break;
-                    }
 
-                    bool equal = originalDigits.SequenceEqual(digits);
+                        long[] firstDigits = digits.Take(j + 1).ToArray();
+                        long[] lastDigits = digits.Skip(j + 1).Take(digits.Length - 1).ToArray();
+                        Array.Sort(lastDigits);
 
-                    if (!equal)
+                        long[] result = firstDigits.Concat(lastDigits).ToArray();
+
+                        return GetNumberFromDigits(result);
+                    }
+                    if (currentDigit == predecessorDigit && digits.Max() != currentDigit)
                     {
-                        int result = GetNumberFromDigits(digits);
-                        return result;
+                        long[] firstDigits = digits.Take(j + 1).ToArray();
+                        long[] lastDigits = digits.Skip(j + 1).Take(digits.Length - 1).ToArray();
+
+                        long nextMaxValue = getNextMaxValue(currentDigit, lastDigits);
+                        long[] maxValueArray = new long[] { nextMaxValue };
+                        int maxIndex = lastDigits.ToList().IndexOf(maxValueArray[0]);
+
+                        firstDigits[firstDigits.Length - 1] = maxValueArray[0];
+                        lastDigits[maxIndex] = predecessorDigit;
+
+                        Array.Reverse(lastDigits);
+
+                        long[] result = firstDigits.Concat(lastDigits).ToArray();
+
+                        return GetNumberFromDigits(result);
                     }
                 }
             }
             return -1;
         }
 
-        private static int GetNumberFromDigits(int[] digits)
+        private static long getNextMaxValue(long digit, long[] digits)
+        {
+            long result = long.MaxValue;
+
+            foreach(long number in digits)
+            {
+                if (number > digit && number < result)
+                {
+                    result = number;
+                }
+            }
+            return result;
+        }
+
+        private static long GetNumberFromDigits(long[] digits)
         {
             string result = string.Join("",digits);
 
-            return Int32.Parse(result);
+            return Int64.Parse(result);
         }
 
-        private static int[] GetAllDigits(int number)
+        private static long[] GetAllDigits(long number)
         {
-            int[] digits = new int[(int)Math.Log10(number) + 1];
+            long[] digits = new long[(int)Math.Log10(number) + 1];
 
             for (int i = 0; i < digits.Length; i++)
             {

@@ -8,9 +8,10 @@ namespace Start
     {
         static void Main(string[] args)
         {
-            long[] numbers = { 9, 111, 531, 12, 513, 2017, 414, 144, 119451725, 534976, 218765 };
+            long[] numbers = { 9, 111, 531, 12, 513, 2017, 414, 144, 119451725, 534976, 218765, 59884848459853 };
+            //long[] numbers = { 59884848459853 };
 
-            foreach (int number in numbers)
+            foreach (long number in numbers)
             {
                 long bruteForceResult = KataBruteForce.NextBiggerNumber(number);
                 Console.WriteLine("Input: " + number + "; Output: " + bruteForceResult + " (Brute Force)");
