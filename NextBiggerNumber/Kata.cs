@@ -9,65 +9,31 @@ namespace NextBiggerNumber
         {
             long[] digits = GetAllDigits(number);
 
-            long[] originalDigits = new long[digits.Length];
-
-            digits.CopyTo(originalDigits, 0);
-
-            for (int i = digits.Length -1; i >= 0; i--)
+            for (int i = digits.Length -1; i >= 1; i--)
             {
-                for (int j = i -1; j >= 0; j--)
+                long currentDigit = digits[i];
+                long predecessorDigit = digits[i-1];
+
+                if (currentDigit > predecessorDigit)
                 {
-                    long currentDigit = digits[i];
-                    long predecessorDigit = digits[j];
+                    long[] firstDigits = digits.Take(i).ToArray();
+                    long[] lastDigits = digits.Skip(i).Take(digits.Length - 1).ToArray();
 
-                    if (currentDigit > predecessorDigit)
-                    {
-                        digits[i] = predecessorDigit;
-                        digits[j] = currentDigit;
+                    long nextMaxValue = GetNextMaxValue(predecessorDigit, lastDigits);
 
-                        long[] firstDigits = digits.Take(j + 1).ToArray();
-                        long[] lastDigits = digits.Skip(j + 1).Take(digits.Length - 1).ToArray();
-                        Array.Sort(lastDigits);
+                    int maxIndex = lastDigits.ToList().LastIndexOf(nextMaxValue);
 
-                        long[] result = firstDigits.Concat(lastDigits).ToArray();
+                    firstDigits[firstDigits.Length - 1] = nextMaxValue;
+                    lastDigits[maxIndex] = predecessorDigit;
 
-                        return GetNumberFromDigits(result);
-                    }
-                    if (currentDigit == predecessorDigit && digits.Max() != currentDigit)
-                    {
-                        long[] firstDigits = digits.Take(j + 1).ToArray();
-                        long[] lastDigits = digits.Skip(j + 1).Take(digits.Length - 1).ToArray();
+                    Array.Reverse(lastDigits);
 
-                        long nextMaxValue = getNextMaxValue(currentDigit, lastDigits);
-                        long[] maxValueArray = new long[] { nextMaxValue };
-                        int maxIndex = lastDigits.ToList().IndexOf(maxValueArray[0]);
+                    long[] result = firstDigits.Concat(lastDigits).ToArray();
 
-                        firstDigits[firstDigits.Length - 1] = maxValueArray[0];
-                        lastDigits[maxIndex] = predecessorDigit;
-
-                        Array.Reverse(lastDigits);
-
-                        long[] result = firstDigits.Concat(lastDigits).ToArray();
-
-                        return GetNumberFromDigits(result);
-                    }
+                    return GetNumberFromDigits(result);
                 }
             }
             return -1;
-        }
-
-        private static long getNextMaxValue(long digit, long[] digits)
-        {
-            long result = long.MaxValue;
-
-            foreach(long number in digits)
-            {
-                if (number > digit && number < result)
-                {
-                    result = number;
-                }
-            }
-            return result;
         }
 
         private static long GetNumberFromDigits(long[] digits)
@@ -87,6 +53,26 @@ namespace NextBiggerNumber
                 number /= 10;
             }
             return digits;
+        }
+        private static long GetNextMaxValue(long digit, long[] digits)
+        {
+            long result = long.MaxValue;
+
+            foreach (long number in digits)
+            {
+                if (number > digit && number < result)
+                {
+                    result = number;
+                }
+            }
+            if (result.Equals(long.MaxValue))
+            {
+                return digit;
+            }
+            else
+            {
+                return result;
+            }
         }
     }
 }

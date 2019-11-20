@@ -8,8 +8,7 @@ namespace Start
     {
         static void Main(string[] args)
         {
-            long[] numbers = { 9, 111, 531, 12, 513, 2017, 414, 144, 119451725, 534976, 218765, 59884848459853 };
-            //long[] numbers = { 59884848459853 };
+            long[] numbers = { 9, 111, 531, 12, 513, 2017, 414, 144, 119451725, 534976, 218765, 59884848459853, 67189764 };
 
             foreach (long number in numbers)
             {
